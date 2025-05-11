@@ -13,7 +13,7 @@ module.exports = defineConfig({
       builderOptions: {
         appId: "com.xx",
         productName: "k_tools", //项目名，也是生成的安装文件名，即aDemo.exe
-        artifactName: "${productName}_${version}.${ext}",
+        artifactName: "${productName}-${platform}-${arch}-${version}.${ext}",
         copyright: "Copyright © xx", //版权信息
         directories: {
           output: "./dist_electron", //输出文件路径
