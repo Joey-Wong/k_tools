@@ -11,7 +11,7 @@ module.exports = defineConfig({
       customFileProtocol: "./",
       preload: "src/preload.js",
       builderOptions: {
-        appId: "com.xx",
+        appId: "com.k_tools",
         productName: "k_tools", //项目名，也是生成的安装文件名，即aDemo.exe
         artifactName: "${productName}-${platform}-${arch}-${version}.${ext}",
         copyright: "Copyright © xx", //版权信息
