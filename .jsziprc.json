@@ -1,0 +1,16 @@
+{
+  "compressionLevel": 9,
+  "dereferenceLinks": true,
+  "entries": [
+    "./"
+  ],
+  "force": true,
+  "ignoreEntries": [
+    "node_modules",
+    "dist_electron"
+  ],
+  "mode": "add",
+  "outputEntry": "tools.zip",
+  "quiet": false,
+  "verbose": false
+}
