@@ -84,13 +84,17 @@ export default {
       testFileName: "",
       isUseReg: false,
       fileNameReg: "",
-      usedTime: 0,
-      usedTimeText: "",
-      startTime: 0,
     };
   },
   mounted() {
-    // ipcRenderer.on("MoveFiles", this.moveFilesRes);
+    ipcRenderer.on("BatchMoveFiles", (event, res) => {
+      const { Code, Msg, Done, Log } = JSON.parse(res);
+      this.$refs["log-conetnt"].addLog({ type: Code !== 0 ? "error" : "", log: Code !== 0 ? Msg : Log });
+      if (Done) {
+        this.Done = true;
+        this.progressing = false;
+      }
+    });
   },
   methods: {
     setIsDeep(v) {
@@ -126,15 +130,6 @@ export default {
         window.$message.error(`请输入标准的正则表达式,如 /^[0-9]{1,2}$/`);
       }
     },
-    timerCount() {
-      setTimeout(() => {
-        if (!this.Done) {
-          this.usedTime++;
-          this.usedTimeText = `${this.usedTime}秒`;
-          this.timerCount();
-        }
-      }, 1000);
-    },
     move() {
       this.$refs["log-conetnt"].clearLog();
       if (!this.sourceDir) {
@@ -158,20 +153,7 @@ export default {
         isUseReg: this.isUseReg,
         isDeep: this.isDeep,
       };
-      this.timerCount();
-      ipcRenderer.send("MoveFiles", JSON.stringify(params));
-    },
-    moveFilesRes(event, rsp) {
-      const res = JSON.parse(rsp);
-      const {
-        RspHeader: { IsSuccess, Msg, Done },
-        RspBody: { log },
-      } = res;
-      this.$refs["log-conetnt"].addLog({ type: !IsSuccess ? "error" : "", log: !IsSuccess ? Msg : log });
-      if (Done) {
-        this.Done = true;
-        this.progressing = false;
-      }
+      ipcRenderer.invoke("BatchMoveFiles", params);
     },
   },
 };

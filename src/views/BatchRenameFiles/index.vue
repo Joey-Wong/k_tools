@@ -141,7 +141,14 @@ export default {
     };
   },
   mounted() {
-    // ipcRenderer.on("BatchRenameFiles", this.getBatchRenameFiles);
+    ipcRenderer.on("BatchRenameFiles", (event, res) => {
+      const { Code, Msg, Done, Log } = JSON.parse(res);
+      this.$refs["log-conetnt"].addLog({ type: Code !== 0 ? "error" : "", log: Code !== 0 ? Msg : Log });
+      if (Done) {
+        this.Done = true;
+        this.progressing = false;
+      }
+    });
   },
   methods: {
     setIsDeep(v) {
@@ -224,19 +231,7 @@ export default {
         regFind: this.regFind,
         regReplace: this.regReplace,
       };
-      ipcRenderer.send("BatchRenameFiles", JSON.stringify(params));
-    },
-    // 重命名结果
-    getBatchRenameFiles(event, rsp) {
-      const res = JSON.parse(rsp);
-      const {
-        RspHeader: { IsSuccess, Msg, Done },
-      } = res;
-      this.$refs["log-conetnt"].addLog({ type: !IsSuccess ? "error" : "", log: Msg });
-      if (Done) {
-        this.Done = true;
-        this.progressing = false;
-      }
+      ipcRenderer.invoke("BatchRenameFiles", params);
     },
   },
   watch: {

@@ -73,7 +73,6 @@ export default {
       this.timerCount();
       const startTime = Date.now();
       const [err, md5] = await ipcRenderer.invoke("GetFileMD5", { file: this.sourceFilePath });
-      console.log(err, md5);
       this.Done = true;
       if (err) {
         window.$message.error(err);

@@ -131,7 +131,6 @@ const Crypto = (params) => {
 
 const getFileMD5 = ({ file }) =>
   new Promise((resolve, reject) => {
-    console.log(`getFileMD5:${file}`);
     const stream = fs.createReadStream(file);
     const hash = crypto.createHash("md5");
     stream.on("data", (chunk) => {
@@ -139,11 +138,9 @@ const getFileMD5 = ({ file }) =>
     });
     stream.on("end", () => {
       const md5 = hash.digest("hex");
-      console.log(`MD5:${md5}`);
       resolve(md5);
     });
     stream.on("error", (e) => {
-      console.log(`MD5:${e}`);
       reject(e);
     });
   });

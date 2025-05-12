@@ -56,10 +56,8 @@ export default {
     };
   },
   mounted() {
-    // ipcRenderer.on("GetDirSameFileMD5", this.getDirSameFileMD5Res);
     ipcRenderer.on("BatchDelSameFile", (event, res) => {
       const { Code, Msg, Done, Log } = JSON.parse(res);
-      console.log(Code, Msg, Done, Log); // 打印从主进程接收到的回复
       this.$refs["log-conetnt"].addLog({ type: Code !== 0 ? "error" : "", log: Code !== 0 ? Msg : Log });
       if (Done) {
         this.Done = true;
@@ -78,8 +76,6 @@ export default {
         sourceDir: this.sourceDir,
         isDeep: this.isDeep,
       };
-      this.log = "";
-      console.log("params", params);
       ipcRenderer.invoke("BatchDelSameFile", params);
     },
   },
