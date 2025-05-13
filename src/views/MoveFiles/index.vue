@@ -50,8 +50,8 @@
           <n-button :disabled="progressing" @click="move()" type="primary">开始移动</n-button>
         </n-space>
       </div>
-      <Log :show="progressing || Done" ref="log-conetnt-mv-files" />
     </div>
+    <Log :show="progressing || Done" ref="refIDBatchMoveFiles" />
   </div>
 </template>
 
@@ -61,7 +61,7 @@ import Log from "@/components/Log";
 import BtnLine from "@/components/BtnLine";
 import LineWrap from "@/components/LineWrap";
 import common from "@/mixins/common";
-
+let BatchMoveFilesSelf = null;
 export default {
   name: "MoveFiles",
   mixins: [common],
@@ -84,19 +84,28 @@ export default {
       testFileName: "",
       isUseReg: false,
       fileNameReg: "",
+      refID: "",
     };
   },
   mounted() {
-    ipcRenderer.on("BatchMoveFiles", (event, res) => {
-      const { Code, Msg, Done, Log } = JSON.parse(res);
-      this.$refs["log-conetnt-mv-files"].addLog({ type: Code !== 0 ? "error" : "", log: Code !== 0 ? Msg : Log });
-      if (Done) {
-        this.Done = true;
-        this.progressing = false;
-      }
-    });
+    BatchMoveFilesSelf = this;
+    ipcRenderer.on("BatchMoveFiles", this.logCB);
+  },
+  beforeUnmount() {
+    ipcRenderer.removeAllListeners("BatchMoveFiles");
   },
   methods: {
+    logCB(event, res) {
+      const { Code, Msg, Done, Log } = JSON.parse(res);
+      BatchMoveFilesSelf.$refs.refIDBatchMoveFiles.addLog({
+        type: Code !== 0 ? "error" : "",
+        log: Code !== 0 ? Msg : Log,
+      });
+      if (Done) {
+        BatchMoveFilesSelf.Done = true;
+        BatchMoveFilesSelf.progressing = false;
+      }
+    },
     setIsDeep(v) {
       this.isDeep = v;
     },
@@ -131,7 +140,7 @@ export default {
       }
     },
     move() {
-      this.$refs["log-conetnt-mv-files"].clearLog();
+      this.$refs.refIDBatchMoveFiles.clearLog();
       if (!this.sourceDir) {
         window.$message.warning(`请选择操作文件夹`);
         return false;

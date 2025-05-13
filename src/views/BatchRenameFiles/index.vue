@@ -75,7 +75,7 @@
         <n-button :disabled="progressing" @click="start()" type="primary">开始批量重命名</n-button>
       </div>
     </div>
-    <Log :show="progressing || Done" ref="log-conetnt-rename-files" />
+    <Log :show="progressing || Done" ref="refIDBatchRenameFiles" />
   </div>
 </template>
 
@@ -86,6 +86,7 @@ import BtnLine from "@/components/BtnLine";
 import LineWrap from "@/components/LineWrap";
 import common from "@/mixins/common";
 
+let BatchRenameFilesSelf = null;
 export default {
   name: "BatchRenameFiles",
   mixins: [common],
@@ -141,16 +142,24 @@ export default {
     };
   },
   mounted() {
-    ipcRenderer.on("BatchRenameFiles", (event, res) => {
-      const { Code, Msg, Done, Log } = JSON.parse(res);
-      this.$refs["log-conetnt-rename-files"].addLog({ type: Code !== 0 ? "error" : "", log: Code !== 0 ? Msg : Log });
-      if (Done) {
-        this.Done = true;
-        this.progressing = false;
-      }
-    });
+    BatchRenameFilesSelf = this;
+    ipcRenderer.on("BatchRenameFiles", this.logCB);
+  },
+  beforeUnmount() {
+    ipcRenderer.removeAllListeners("BatchRenameFiles");
   },
   methods: {
+    logCB(event, res) {
+      const { Code, Msg, Done, Log } = JSON.parse(res);
+      BatchRenameFilesSelf.$refs.refIDBatchRenameFiles.addLog({
+        type: Code !== 0 ? "error" : "",
+        log: Code !== 0 ? Msg : Log,
+      });
+      if (Done) {
+        BatchRenameFilesSelf.Done = true;
+        BatchRenameFilesSelf.progressing = false;
+      }
+    },
     setIsDeep(v) {
       this.isDeep = v;
     },
@@ -201,7 +210,7 @@ export default {
       }
     },
     start() {
-      this.$refs["log-conetnt-rename-files"].clearLog();
+      this.$refs.refIDBatchRenameFiles.clearLog();
       this.Done = false; // 是否执行完成
       this.progressing = false; // 在执行中
       if (!this.sourceDir) {

@@ -1,5 +1,5 @@
 "use strict";
-import { log, getCfg, getResourcesDir } from "@/main-render/utils";
+import { log, getResourcesDir } from "@/main-render/utils";
 import { app, protocol, BrowserWindow, Menu, Tray, session } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
@@ -94,6 +94,11 @@ const beforeAppStart = async () => {
       log(msg);
     }
   };
+
+  global.pathSep = path.sep;
+  global.appPath = path.dirname(app.getPath("exe")).split(path.sep).join("/");
+  global.uuid = machineIdSync();
+  console.log("[beforeAppStart]", Date.now());
   // 捕获未处理的同步异常
   process.on("uncaughtException", (error) => {
     console.log(error.message);
@@ -105,10 +110,6 @@ const beforeAppStart = async () => {
   process.on("unhandledRejection", (reason, promise) => {
     console.log(reason.message);
   });
-  console.log("[beforeAppStart]", Date.now());
-  global.pathSep = path.sep;
-  global.appPath = path.dirname(app.getPath("exe")).split(path.sep).join("/");
-  global.uuid = machineIdSync();
 };
 
 // 尝试获取单实例锁

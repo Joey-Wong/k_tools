@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import { to } from "@/utils";
-import { getFiles, getResourcesDir, AppID, SaveCfg, getCfg, getFileMD5, getFileSize } from "@/main-render/utils";
+import { getFiles, getResourcesDir, AppID, getFileMD5, getFileSize } from "@/main-render/utils";
 import BatchDelSameFile from "@/main-render/batchDelSameFile";
 import BatchRenameFiles from "@/main-render/batchRenameFiles";
 import BatchMoveFiles from "@/main-render/batchMoveFiles";
@@ -22,12 +22,6 @@ const fnMap = {
   },
   AppID: async (params) => {
     return await AppID(params);
-  },
-  SaveCfg: async (params) => {
-    return await SaveCfg(params);
-  },
-  GetCfg: async (params) => {
-    return await getCfg(params);
   },
   GetFileMD5: async (params) => {
     return await getFileMD5(params);

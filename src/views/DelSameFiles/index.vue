@@ -26,7 +26,7 @@
         {{ progressing ? "扫描中..." : "开始扫描" }}
       </n-button>
     </div>
-    <Log :show="progressing || Done" ref="log-conetnt-del-files" />
+    <Log :show="progressing || Done" ref="refIDBatchDelSameFile" />
   </div>
 </template>
 
@@ -36,6 +36,7 @@ import BtnLine from "@/components/BtnLine";
 import LineWrap from "@/components/LineWrap";
 import common from "@/mixins/common";
 import Log from "@/components/Log";
+let BatchDelSameFilesSelf = null;
 export default {
   name: "DelSameFiles",
   mixins: [common],
@@ -56,21 +57,29 @@ export default {
     };
   },
   mounted() {
-    ipcRenderer.on("BatchDelSameFile", (event, res) => {
-      const { Code, Msg, Done, Log } = JSON.parse(res);
-      this.$refs["log-conetnt-del-files"].addLog({ type: Code !== 0 ? "error" : "", log: Code !== 0 ? Msg : Log });
-      if (Done) {
-        this.Done = true;
-        this.progressing = false;
-      }
-    });
+    BatchDelSameFilesSelf = this;
+    ipcRenderer.on("BatchDelSameFile", this.logCB);
+  },
+  beforeUnmount() {
+    ipcRenderer.removeAllListeners("BatchDelSameFile");
   },
   methods: {
+    logCB(event, res) {
+      const { Code, Msg, Done, Log } = JSON.parse(res);
+      BatchDelSameFilesSelf.$refs.refIDBatchDelSameFile.addLog({
+        type: Code !== 0 ? "error" : "",
+        log: Code !== 0 ? Msg : Log,
+      });
+      if (Done) {
+        BatchDelSameFilesSelf.Done = true;
+        BatchDelSameFilesSelf.progressing = false;
+      }
+    },
     setIsDeep(v) {
       this.isDeep = v;
     },
     getDirSameFileMD5() {
-      this.$refs["log-conetnt-del-files"].clearLog();
+      this.$refs.refIDBatchDelSameFile.clearLog();
       this.progressing = true;
       const params = {
         sourceDir: this.sourceDir,

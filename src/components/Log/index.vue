@@ -1,6 +1,6 @@
 <template>
   <div :style="{ height: height }" v-show="show" class="log-conetnt-wrap">
-    <div ref="log-conetnt" class="log-conetnt" v-html="logHtml" />
+    <div :ref="logRef" class="log-conetnt" v-html="logHtml" />
   </div>
 </template>
 
@@ -24,13 +24,17 @@ export default {
   data() {
     return {
       logHtml: ``,
+      logRef: "",
     };
+  },
+  mounted() {
+    this.logRef = `log-conetnt-${new Date().getTime()}`;
   },
   methods: {
     addLog({ type, log }) {
       this.logHtml += `<p ${colorType[type] || ""}>${log}</p>`;
       setTimeout(() => {
-        const logConetntRef = this.$refs["log-conetnt"];
+        const logConetntRef = this.$refs[this.logRef];
         logConetntRef.scrollTop = logConetntRef.scrollHeight;
       }, 500);
     },
