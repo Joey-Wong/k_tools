@@ -50,7 +50,7 @@
           <n-button :disabled="progressing" @click="move()" type="primary">开始移动</n-button>
         </n-space>
       </div>
-      <Log :show="progressing || Done" ref="log-conetnt" />
+      <Log :show="progressing || Done" ref="log-conetnt-mv-files" />
     </div>
   </div>
 </template>
@@ -89,7 +89,7 @@ export default {
   mounted() {
     ipcRenderer.on("BatchMoveFiles", (event, res) => {
       const { Code, Msg, Done, Log } = JSON.parse(res);
-      this.$refs["log-conetnt"].addLog({ type: Code !== 0 ? "error" : "", log: Code !== 0 ? Msg : Log });
+      this.$refs["log-conetnt-mv-files"].addLog({ type: Code !== 0 ? "error" : "", log: Code !== 0 ? Msg : Log });
       if (Done) {
         this.Done = true;
         this.progressing = false;
@@ -131,7 +131,7 @@ export default {
       }
     },
     move() {
-      this.$refs["log-conetnt"].clearLog();
+      this.$refs["log-conetnt-mv-files"].clearLog();
       if (!this.sourceDir) {
         window.$message.warning(`请选择操作文件夹`);
         return false;

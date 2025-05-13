@@ -26,7 +26,7 @@
         {{ progressing ? "扫描中..." : "开始扫描" }}
       </n-button>
     </div>
-    <Log :show="progressing || Done" ref="log-conetnt" />
+    <Log :show="progressing || Done" ref="log-conetnt-del-files" />
   </div>
 </template>
 
@@ -58,7 +58,7 @@ export default {
   mounted() {
     ipcRenderer.on("BatchDelSameFile", (event, res) => {
       const { Code, Msg, Done, Log } = JSON.parse(res);
-      this.$refs["log-conetnt"].addLog({ type: Code !== 0 ? "error" : "", log: Code !== 0 ? Msg : Log });
+      this.$refs["log-conetnt-del-files"].addLog({ type: Code !== 0 ? "error" : "", log: Code !== 0 ? Msg : Log });
       if (Done) {
         this.Done = true;
         this.progressing = false;
@@ -70,7 +70,7 @@ export default {
       this.isDeep = v;
     },
     getDirSameFileMD5() {
-      this.$refs["log-conetnt"].clearLog();
+      this.$refs["log-conetnt-del-files"].clearLog();
       this.progressing = true;
       const params = {
         sourceDir: this.sourceDir,

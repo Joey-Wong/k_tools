@@ -75,7 +75,7 @@
         <n-button :disabled="progressing" @click="start()" type="primary">开始批量重命名</n-button>
       </div>
     </div>
-    <Log :show="progressing || Done" ref="log-conetnt" />
+    <Log :show="progressing || Done" ref="log-conetnt-rename-files" />
   </div>
 </template>
 
@@ -143,7 +143,7 @@ export default {
   mounted() {
     ipcRenderer.on("BatchRenameFiles", (event, res) => {
       const { Code, Msg, Done, Log } = JSON.parse(res);
-      this.$refs["log-conetnt"].addLog({ type: Code !== 0 ? "error" : "", log: Code !== 0 ? Msg : Log });
+      this.$refs["log-conetnt-rename-files"].addLog({ type: Code !== 0 ? "error" : "", log: Code !== 0 ? Msg : Log });
       if (Done) {
         this.Done = true;
         this.progressing = false;
@@ -201,7 +201,7 @@ export default {
       }
     },
     start() {
-      this.$refs["log-conetnt"].clearLog();
+      this.$refs["log-conetnt-rename-files"].clearLog();
       this.Done = false; // 是否执行完成
       this.progressing = false; // 在执行中
       if (!this.sourceDir) {

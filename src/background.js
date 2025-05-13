@@ -94,6 +94,18 @@ const beforeAppStart = async () => {
       log(msg);
     }
   };
+  // 捕获未处理的同步异常
+  process.on("uncaughtException", (error) => {
+    console.log(error.message);
+    // 可以选择退出进程
+    // process.exit(1);
+  });
+
+  // 捕获未处理的 Promise 拒绝
+  process.on("unhandledRejection", (reason, promise) => {
+    console.log(reason.message);
+  });
+  console.log("[beforeAppStart]", Date.now());
   global.pathSep = path.sep;
   global.appPath = path.dirname(app.getPath("exe")).split(path.sep).join("/");
   global.uuid = machineIdSync();
