@@ -23,20 +23,16 @@ jobs:
         with:
           node-version: 18
 
-      - name: Setup Python
+      - name: Setup-Python
         if: runner.os == 'macOS'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'  # 确保 Python 版本正确
 
-      - name: Create Python symlink
-        if: runner.os =='macOS'
-        run: |
-          sudo ln -s $(which python3) /usr/bin/python  # 临时创建软链接
-          python --version  # 验证
-        shell: bash  # 确保使用 bash 执行命令
-
       - name: Install dependencies
+        env:
+          if: runner.os == 'macOS'
+          PYTHON: ${{ steps.setup-python.outputs.python-path }}  # 使用 action 输出的路径
         run: npm i
 
       - name: Build app
