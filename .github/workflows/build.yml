@@ -27,6 +27,7 @@ jobs:
       - name: Setup-Python
         if: runner.os == 'macOS'
         uses: actions/setup-python@v5
+        id: setup-python # 添加 id，方便后续引用
         with:
           python-version: '3.11'  # 确保 Python 版本正确
 
@@ -48,6 +49,10 @@ jobs:
 
       - name: Build app (macOS)
         if: runner.os == 'macOS'
+        env:
+          # 显式设置 Python 路径
+          PYTHON: ${{ steps.setup-python.outputs.python-path }}
+          npm_config_python: ${{ steps.setup-python.outputs.python-path }}
         run: npm run electron:build
 
       - name: Upload Artifact
