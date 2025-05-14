@@ -28,7 +28,7 @@ jobs:
         if: runner.os == 'macOS'
         uses: actions/setup-python@v5
         with:
-          python-version: '2.7'  # 确保 Python 版本正确
+          python-version: '3.11'  # 确保 Python 版本正确
 
       - name: Install dependencies
         if: runner.os != 'macOS'
