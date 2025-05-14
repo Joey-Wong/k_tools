@@ -29,6 +29,13 @@ jobs:
         with:
           python-version: '3.11'  # 确保 Python 版本正确
 
+      - name: Create Python symlink
+        if: runner.os =='macOS'
+        run: |
+          sudo ln -s $(which python3) /usr/bin/python  # 临时创建软链接
+          python --version  # 验证
+        shell: bash  # 确保使用 bash 执行命令
+
       - name: Install dependencies
         run: npm i
 
@@ -42,5 +49,5 @@ jobs:
           path: |
             ${{ runner.os == 'Windows' && 'dist_electron/*.exe' || '' }}
             ${{ runner.os == 'macOS' && 'dist_electron/*.{dmg,zip}' || '' }}
-            ${{ runner.os == 'Linux' && 'dist_electron/*.{AppImage,snap}' || '' }}
+            ${{ runner.os == 'Linux' && 'dist_electron/*.snap' || '' }}
           if-no-files-found: warn  # 允许某些平台没有匹配文件
