@@ -9,7 +9,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-    
+    env:
+      CI: true  # 启用持续集成模式（大多数工具默认支持）
+      DEBIAN_FRONTEND: noninteractive  # 适用于 apt-get（Linux）
+      ACCEPT_EULA: Y  # 接受 Microsoft 软件许可协议
+      npm_config_yes: true  # npm 命令默认回答 "yes"
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
