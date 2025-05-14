@@ -53,7 +53,7 @@ jobs:
           # 显式设置 Python 路径
           PYTHON: ${{ steps.setup-python.outputs.python-path }}
           npm_config_python: ${{ steps.setup-python.outputs.python-path }}
-        run: npm run electron:build
+        run: npm_config_python=$PYTHON npm run electron:build
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
