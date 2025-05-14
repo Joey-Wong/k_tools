@@ -55,7 +55,7 @@ jobs:
           npm_config_python: ${{ steps.setup-python.outputs.python-path }}
         run: npm_config_python=$PYTHON npm run electron:build
 
-      - name: Upload Artifact
+      - name: Upload-Artifact-${{ matrix.os }}
         uses: actions/upload-artifact@v4
         with:
           name: dist-files
