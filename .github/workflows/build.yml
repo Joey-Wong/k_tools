@@ -30,12 +30,23 @@ jobs:
           python-version: '3.11'  # 确保 Python 版本正确
 
       - name: Install dependencies
+        if: runner.os != 'macOS'
+        run: npm i
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
         env:
-          if: runner.os == 'macOS'
           PYTHON: ${{ steps.setup-python.outputs.python-path }}  # 使用 action 输出的路径
         run: npm i
 
       - name: Build app
+        if: runner.os != 'macOS'
+        run: npm run electron:build
+
+      - name: Build app (macOS)
+        if: runner.os == 'macOS'
+        env:
+          PYTHON: ${{ steps.setup-python.outputs.python-path }}  # 使用 action 输出的路径
         run: npm run electron:build
 
       - name: Upload Artifact
