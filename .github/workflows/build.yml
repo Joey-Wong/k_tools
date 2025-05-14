@@ -39,6 +39,10 @@ jobs:
           PYTHON: ${{ steps.setup-python.outputs.python-path }}  # 使用 action 输出的路径
         run: npm i
 
+      - name: Eslint
+        if: runner.os == 'Windows'
+        run: npm run lint
+
       - name: Build app
         if: runner.os != 'macOS'
         run: npm run electron:build
