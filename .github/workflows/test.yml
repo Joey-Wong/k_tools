@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 18
 
-      - name: Set up Python (仅 macOS 需要)
+      - name: Setup Python (仅 macOS 需要)
         if: runner.os == 'macOS'
         uses: actions/setup-python@v5
         with:
