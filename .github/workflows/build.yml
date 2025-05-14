@@ -46,8 +46,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist-files
-          path: |
-            ${{ runner.os == 'Windows' && 'dist_electron/*.exe' || '' }}
-            ${{ runner.os == 'macOS' && 'dist_electron/*.{dmg,zip}' || '' }}
-            ${{ runner.os == 'Linux' && 'dist_electron/*.snap' || '' }}
+          path: dist_electron
           if-no-files-found: warn  # 允许某些平台没有匹配文件
