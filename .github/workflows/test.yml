@@ -41,3 +41,55 @@ jobs:
             ${{ runner.os == 'macOS' && 'dist_electron/*.{dmg,app.zip}' || '' }}
             ${{ runner.os == 'Linux' && 'dist_electron/*.{AppImage,appimage,deb,rpm,snap,tar.gz}' || '' }}
           if-no-files-found: warn  # 允许某些平台没有匹配文件
+
+
+
+
+
+
+
+
+
+
+
+
+
+name: Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Setup Python
+        if: runner.os == 'macOS'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'  # 确保 Python 版本正确
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Build app
+        run: npm run electron:build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-files
+          path: dist_electron/*.{exe,dmg,app.zip,AppImage,deb,rpm,snap}  # Windows exe文件, macOS DMG安装包, macOS压缩应用, Linux AppImage, Linux DEB包, Linux RPM包, Linux Snap包
+          if-no-files-found: error
