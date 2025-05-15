@@ -23,35 +23,6 @@ jobs:
         with:
           node-version: 18
 
-      - name: Setup-Python
-        if: runner.os == 'macOS'
-        uses: actions/setup-python@v5
-        id: setup-python # 添加 id，方便后续引用
-        with:
-          python-version: '3.11'  # 确保 Python 版本正确
-
-      - name: 创建软链接
-        if: runner.os == 'macOS'
-        run: |
-          # 创建 python3 -> python 的软链接
-          sudo ln -s $(which python3) /usr/local/bin/python
-          
-          # 创建 pip3 -> pip 的软链接
-          sudo ln -s $(which pip3) /usr/local/bin/pip
-          
-          # 验证软链接是否创建成功
-          echo "软链接创建成功："
-          ls -l /usr/local/bin/python
-          ls -l /usr/local/bin/pip
-
-      - name: 验证安装和软链接
-        if: runner.os == 'macOS'
-        run: |
-          python --version
-          pip --version
-          python3 --version
-          pip3 --version
-
       - name: Install dependencies
         run: npm i
 
