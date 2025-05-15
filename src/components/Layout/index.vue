@@ -34,7 +34,7 @@
         </div>
         <img :src="selectedDonateMethod === 1 ? imgs.zhifupay : imgs.wechatpay" />
         <p>如果觉得该软件还不错就支持一下作者吧</p>
-        <p>软件官网: https://tools.yasol.cn</p>
+        <p></p>
         <p>QQ:511212586</p>
       </div>
     </n-modal>
