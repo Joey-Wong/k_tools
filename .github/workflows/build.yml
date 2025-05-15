@@ -8,8 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # os: [ubuntu-latest, windows-latest, macos-latest]
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     env:
       CI: true  # 启用持续集成模式（大多数工具默认支持）
       DEBIAN_FRONTEND: noninteractive  # 适用于 apt-get（Linux）
