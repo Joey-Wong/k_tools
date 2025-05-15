@@ -34,15 +34,15 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           # 创建 python3 -> python 的软链接
-          sudo ln -s $(which python3) /usr/bin/python
+          sudo ln -s $(which python3) /usr/local/bin/python
           
           # 创建 pip3 -> pip 的软链接
-          sudo ln -s $(which pip3) /usr/bin/pip
+          sudo ln -s $(which pip3) /usr/local/bin/pip
           
           # 验证软链接是否创建成功
           echo "软链接创建成功："
-          ls -l /usr/bin/python
-          ls -l /usr/bin/pip
+          ls -l /usr/local/bin/python
+          ls -l /usr/local/bin/pip
 
       - name: 验证安装和软链接
         if: runner.os == 'macOS'
