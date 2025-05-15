@@ -33,3 +33,6 @@ jobs:
           pip --version
           python3 --version
           pip3 --version
+
+
+          /usr/bin/python

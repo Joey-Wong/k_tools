@@ -30,12 +30,29 @@ jobs:
         with:
           python-version: '3.11'  # 确保 Python 版本正确
 
-      - name: Install dependencies
-        if: runner.os != 'macOS'
-        run: npm i
-
-      - name: Install dependencies (macOS)
+      - name: 创建软链接
         if: runner.os == 'macOS'
+        run: |
+          # 创建 python3 -> python 的软链接
+          sudo ln -s $(which python3) /usr/bin/python
+          
+          # 创建 pip3 -> pip 的软链接
+          sudo ln -s $(which pip3) /usr/bin/pip
+          
+          # 验证软链接是否创建成功
+          echo "软链接创建成功："
+          ls -l /usr/bin/python
+          ls -l /usr/bin/pip
+
+      - name: 验证安装和软链接
+        if: runner.os == 'macOS'
+        run: |
+          python --version
+          pip --version
+          python3 --version
+          pip3 --version
+
+      - name: Install dependencies
         run: npm i
 
       - name: Eslint
@@ -43,19 +60,10 @@ jobs:
         run: npm run lint
 
       - name: Build app
-        if: runner.os != 'macOS'
         run: npm run electron:build
-
-      - name: Build app (macOS)
-        if: runner.os == 'macOS'
-        env:
-          # 显式设置 Python 路径
-          PYTHON: ${{ steps.setup-python.outputs.python-path }}
-          npm_config_python: ${{ steps.setup-python.outputs.python-path }}
-        run: npm_config_python=$PYTHON npm run electron:build
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ runner.os }}-dist-files
+          name: ${{ runner.os }}-dist_electron
           path: dist_electron/
