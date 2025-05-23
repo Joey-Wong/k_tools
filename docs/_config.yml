@@ -1,6 +1,38 @@
+# 远程主题配置
 remote_theme: pages-themes/cayman@v0.2.0
-plugins:
-- jekyll-remote-theme # add this line to the plugins list if you already have one
 
-title: [The title of your site]
-description: [A short description of your site's purpose]
+# Jekyll 插件配置
+plugins:
+  - jekyll-remote-theme # 若已有插件列表，将这行添加进去
+
+# 站点基本信息
+title: "K Tools Documentation"
+description: "Explore the comprehensive documentation for K Tools, a powerful toolkit designed to streamline your development process."
+
+# 站点 URL 配置
+baseurl: "/k_tools/docs"       # 若站点部署在子目录下，配置子目录路径
+
+# 作者信息
+author:
+  name: "Your Name"
+  email: "your.email@example.com"
+
+# 导航栏链接配置
+nav_links:
+  - title: "Home"
+    url: "/"
+  - title: "Documentation"
+    url: "/docs"
+  - title: "About"
+    url: "/about"
+
+# 分页配置
+paginate: 10
+paginate_path: "/page:num/"
+
+# 高亮代码配置
+highlighter: rouge
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
