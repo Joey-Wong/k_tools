@@ -1,101 +1,116 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>K Tools 展示页</title>
     <style>
         :root {
-            --primary-color: #159957;
-            --secondary-color: #155799;
-            --background-color: #2b3137;
-            --light-background-color: #fff;
-            --text-color: #fff;
-            --light-text-color: #333;
-            --link-color: #4078c0;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background-color: #ffffff;
+            --text-color: #333333;
+            --light-text-color: #ffffff;
+            --border-color: #e0e0e0;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.5;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         header {
-            background: linear-gradient(120deg, var(--primary-color), var(--secondary-color));
-            color: var(--text-color);
+            background-color: var(--primary-color);
+            color: var(--light-text-color);
+            padding: 2rem 1rem;
             text-align: center;
-            padding: 4rem 1rem;
         }
 
         header h1 {
-            font-size: 3rem;
             margin: 0;
+            font-size: 2.5rem;
         }
 
         header p {
-            font-size: 1.5rem;
-            margin: 1rem 0 0;
+            font-size: 1.2rem;
+            margin: 0.5rem 0 0;
         }
 
-        .main-content {
-            background-color: var(--light-background-color);
-            color: var(--light-text-color);
-            padding: 2rem 1rem;
-        }
-
-        .container {
-            max-width: 64rem;
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         .section {
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .bg-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .section h2 {
+            color: var(--primary-color);
             font-size: 2rem;
-            margin-top: 0;
             margin-bottom: 1rem;
-        }
-
-        .section h3 {
-            font-size: 1.5rem;
-            margin-top: 0;
-            margin-bottom: 0.5rem;
         }
 
         .features {
             display: flex;
-            flex-wrap: wrap;
             gap: 2rem;
+            flex-wrap: wrap;
         }
 
-        .feature {
+        .feature-card {
             flex: 1 1 300px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            color: var(--secondary-color);
+            margin-top: 0;
         }
 
         pre {
-            background-color: #f6f8fa;
+            background-color: #f8f9fa;
             padding: 1rem;
             border-radius: 4px;
             overflow-x: auto;
         }
 
         code {
-            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            font-family: 'Fira Code', monospace;
         }
 
         .download-buttons {
-            text-align: center;
-            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .btn {
-            display: inline-block;
-            background-color: var(--link-color);
-            color: var(--text-color);
+            background-color: var(--secondary-color);
+            color: var(--light-text-color);
             padding: 0.8rem 1.5rem;
             border-radius: 4px;
             text-decoration: none;
@@ -103,91 +118,66 @@
         }
 
         .btn:hover {
-            background-color: #3060b0;
+            background-color: #2980b9;
         }
 
         footer {
-            background-color: var(--background-color);
-            color: var(--text-color);
+            background-color: var(--primary-color);
+            color: var(--light-text-color);
             text-align: center;
-            padding: 2rem 1rem;
+            padding: 1rem;
         }
 
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 2rem;
+            main {
+                padding: 1rem;
             }
 
-            header p {
-                font-size: 1.2rem;
-            }
-
-            .section h2 {
-                font-size: 1.5rem;
-            }
-
-            .section h3 {
-                font-size: 1.2rem;
+            .features {
+                flex-direction: column;
             }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Fira+Code&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <header>
-        <h1>K Tools - 高效开发工具集</h1>
-        <p>强大且易用的开发工具，提升你的开发效率</p>
+        <h1>K Tools</h1>
+        <p>一款集 [计算文件MD5, 文件查重与删除, 批量移动文件, 批量重命名文件] 于一体的实用工具</p>
     </header>
-    <div class="main-content">
-        <div class="container">
-            <div class="section">
-                <h2>产品特性</h2>
-                <div class="features">
-                    <div class="feature">
-                        <h3>功能强大</h3>
-                        <p>K Tools 集成了多种实用开发工具，涵盖代码生成、自动化测试等多个领域，显著提升开发效率。</p>
-                    </div>
-                    <div class="feature">
-                        <h3>易于使用</h3>
-                        <p>简洁直观的操作界面，即使是新手也能快速上手，节省学习成本。</p>
-                    </div>
-                    <div class="feature">
-                        <h3>高度可定制</h3>
-                        <p>支持根据不同项目需求进行个性化配置，满足多样化的开发场景。</p>
-                    </div>
+    <main>
+        <div class="section">
+            <h2>产品特性</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <h3>功能强大</h3>
+                    <p>K Tools 集成了计算文件MD5, 文件查重与删除, 批量移动文件, 批量重命名文件等实用工具, 显著提升办公效率.</p>
                 </div>
-            </div>
-            <div class="section">
-                <h2>快速开始</h2>
-                <h3>安装步骤</h3>
-                <ol>
-                    <li>下载最新版本的 K Tools。</li>
-                    <li>解压到指定目录。</li>
-                    <li>运行安装脚本。</li>
-                </ol>
-                <pre><code>./install_k_tools.sh</code></pre>
-                <h3>功能演示</h3>
-                <p>以下是一个简单的代码示例，展示 K Tools 的代码生成功能：</p>
-                <pre><code>
-// 使用 K Tools 生成 API 接口代码
-const apiGenerator = require('k-tools/api-generator');
-const apiConfig = {
-    baseUrl: 'https://api.example.com',
-    endpoints: ['/users', '/posts']
-};
-apiGenerator.generate(apiConfig);
-                </code></pre>
-            </div>
-            <div class="section">
-                <h2>下载 K Tools</h2>
-                <div class="download-buttons">
-                    <a href="#" class="btn">下载 .zip</a>
-                    <a href="#" class="btn">下载 .tar.gz</a>
+                <div class="feature-card">
+                    <h3>易于使用</h3>
+                    <p>简洁直观的操作界面, 即使是新手也能快速上手, 节省学习成本.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>高度可定制</h3>
+                    <p>支持批量操作, 无需挨个挨个操作单一文件.</p>
                 </div>
             </div>
         </div>
-    </div>
-    <footer>
-        <p>&copy; 2025 K Tools. 保留所有权利。</p>
-    </footer>
+        <div class="section">
+            <h2>快速开始</h2>
+            <div class="download-buttons">
+                <a href="https://github.com/Joey-Wong/k_tools/releases/download/v1.0.0/k_tools-win32-x64-1.0.0.exe"
+                    class="btn">Windows</a>
+                <a href="https://github.com/Joey-Wong/k_tools/releases/download/v1.0.0/k_tools-darwin-arm64-1.0.0.dmg"
+                    class="btn">Mac</a>
+                <a href="https://github.com/Joey-Wong/k_tools/releases/download/v1.0.0/k_tools-linux-x86_64-1.0.0.AppImage"
+                    class="btn">Linux</a>
+            </div>
+        </div>
+        <div class="section bg-img"><img src="./menu3.png" alt="menu3"></div>
+    </main>
 </body>
+
 </html>
