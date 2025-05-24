@@ -5,80 +5,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>K Tools 展示页</title>
     <style>
+        /* 全局变量 */
         :root {
-            --primary-color: #157878;
-            --secondary-color: #f4f4f4;
-            --text-color: #333;
+            --primary-color: #159957;
+            --secondary-color: #155799;
+            --background-color: #2b3137;
+            --text-color: #fff;
+            --link-color: #4078c0;
         }
 
         body {
-            font-family: 'Open Sans', sans-serif;
-            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            line-height: 1.5;
             color: var(--text-color);
+            background-color: var(--background-color);
             margin: 0;
             padding: 0;
         }
 
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
         header {
-            background-color: var(--primary-color);
-            color: white;
             text-align: center;
-            padding: 2rem 0;
+            padding: 4rem 1rem;
+            background: linear-gradient(120deg, var(--primary-color), var(--secondary-color));
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin: 0 0 1rem;
+        }
+
+        header p {
+            font-size: 1.5rem;
+            margin: 0;
         }
 
         .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
+            max-width: 64rem;
+            padding: 0 1rem;
+            margin: 0 auto;
+        }
+
+        .main-content {
             padding: 2rem 0;
         }
 
-        .feature {
-            display: flex;
-            margin-bottom: 2rem;
-            align-items: center;
-        }
-
-        .feature-icon {
+        .main-content h2 {
             font-size: 2rem;
-            color: var(--primary-color);
-            margin-right: 1rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
         }
 
-        .btn {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
+        .main-content h3 {
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
         }
 
-        .btn:hover {
-            background-color: #115e5e;
+        .main-content p {
+            margin-bottom: 1rem;
+        }
+
+        .main-content pre {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        .main-content code {
+            font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        }
+
+        .feature {
+            margin-bottom: 2rem;
+        }
+
+        .feature h2 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
         }
 
         .download-section {
             text-align: center;
-            background-color: var(--secondary-color);
             padding: 2rem 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--link-color);
+            color: var(--text-color);
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #3060b0;
+            text-decoration: none;
         }
 
         footer {
             text-align: center;
-            padding: 1rem 0;
-            background-color: #333;
-            color: white;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         @media (max-width: 768px) {
-            .container {
-                width: 95%;
+            header h1 {
+                font-size: 2rem;
             }
-            .feature {
-                flex-direction: column;
-                text-align: center;
+
+            header p {
+                font-size: 1.2rem;
+            }
+
+            .main-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .main-content h3 {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -88,44 +144,34 @@
         <h1>K Tools - 高效开发工具集</h1>
         <p>强大且易用的开发工具，提升你的开发效率</p>
     </header>
-
     <div class="container">
-        <div class="feature">
-            <div class="feature-icon">✨</div>
-            <div>
+        <div class="main-content">
+            <h2>产品特性</h2>
+            <div class="feature">
                 <h2>功能强大</h2>
                 <p>K Tools 集成了多种实用开发工具，涵盖代码生成、自动化测试等多个领域，显著提升开发效率。</p>
             </div>
-        </div>
-
-        <div class="feature">
-            <div class="feature-icon">🚀</div>
-            <div>
+            <div class="feature">
                 <h2>易于使用</h2>
                 <p>简洁直观的操作界面，即使是新手也能快速上手，节省学习成本。</p>
             </div>
-        </div>
-
-        <div class="feature">
-            <div class="feature-icon">🔧</div>
-            <div>
+            <div class="feature">
                 <h2>高度可定制</h2>
                 <p>支持根据不同项目需求进行个性化配置，满足多样化的开发场景。</p>
             </div>
-        </div>
 
-        <h2>快速开始</h2>
-        <h3>安装步骤</h3>
-        <ol>
-            <li>下载最新版本的 K Tools。</li>
-            <li>解压到指定目录。</li>
-            <li>运行安装脚本。</li>
-        </ol>
-        <pre><code>./install_k_tools.sh</code></pre>
+            <h2>快速开始</h2>
+            <h3>安装步骤</h3>
+            <ol>
+                <li>下载最新版本的 K Tools。</li>
+                <li>解压到指定目录。</li>
+                <li>运行安装脚本。</li>
+            </ol>
+            <pre><code>./install_k_tools.sh</code></pre>
 
-        <h3>功能演示</h3>
-        <p>以下是一个简单的代码示例，展示 K Tools 的代码生成功能：</p>
-        <pre><code>
+            <h3>功能演示</h3>
+            <p>以下是一个简单的代码示例，展示 K Tools 的代码生成功能：</p>
+            <pre><code>
 // 使用 K Tools 生成 API 接口代码
 const apiGenerator = require('k-tools/api-generator');
 const apiConfig = {
@@ -133,15 +179,14 @@ const apiConfig = {
     endpoints: ['/users', '/posts']
 };
 apiGenerator.generate(apiConfig);
-        </code></pre>
+            </code></pre>
+        </div>
     </div>
-
     <div class="download-section">
         <h2>下载 K Tools</h2>
         <a href="#" class="btn">下载 .zip</a>
         <a href="#" class="btn">下载 .tar.gz</a>
     </div>
-
     <footer>
         <p>&copy; 2025 K Tools. 保留所有权利。</p>
     </footer>
