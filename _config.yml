@@ -1,27 +1,5 @@
-# 站点基本信息
-title: "K Tools Documentation"
-description: "Explore the comprehensive documentation for K Tools, a powerful toolkit designed to streamline your development process."
-author:
-  name: "Your Name"
-  email: "your.email@example.com"
-
-baseurl: "/k_tools/docs"
-
-# 远程主题配置
-remote_theme: pages-themes/cayman@v0.2.0
-
-# Jekyll 插件配置
-plugins:
-  - jekyll-remote-theme
-  - jekyll-paginate
-
-# 分页配置
-paginate: 10
-paginate_path: "/page:num/"
-
-# 高亮代码配置
-highlighter: rouge
-markdown: kramdown
-kramdown:
-  input: GFM
-  syntax_highlighter: rouge
+title: Cayman theme
+description: Cayman is a clean, responsive theme for GitHub Pages.
+show_downloads: true
+google_analytics:
+theme: jekyll-theme-cayman
