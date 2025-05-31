@@ -1,8 +1,10 @@
 name: Build
 
 on:
-  workflow_dispatch:
-
+  push:
+    branches:
+      - main  # 指定触发分支，可改为你的分支名
+      - develop  # 可添加多个分支
 jobs:
   build:
     runs-on: ${{ matrix.os }}
