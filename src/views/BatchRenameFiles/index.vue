@@ -227,7 +227,7 @@ export default {
           return false;
         }
       }
-      if (this.rules[Number(this.selectedRule)].inputDes && !this.addContent) {
+      if (!this.isUseReg && this.rules[Number(this.selectedRule)].inputDes && !this.addContent) {
         window.$message.success(this.rules[Number(this.selectedRule)].inputDes);
         return false;
       }
