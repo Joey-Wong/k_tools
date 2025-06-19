@@ -25,6 +25,11 @@ const routes = [
     name: "moveFiles",
     component: () => import("@/views/MoveFiles"),
   },
+  {
+    path: "/getDirFiles",
+    name: "getDirFiles",
+    component: () => import("@/views/GetDirFiles"),
+  },
 ];
 
 export default routes;

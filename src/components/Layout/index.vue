@@ -131,6 +131,10 @@ export default {
           title: "批量重命名文件",
           key: "batchRenameFiles",
         },
+        {
+          title: "获取文件列表",
+          key: "getDirFiles",
+        },
       ],
       selectedMenuItem: {
         title: "计算文件MD5",

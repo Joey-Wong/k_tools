@@ -6,8 +6,11 @@ import BatchRenameFiles from "@/main-render/batchRenameFiles";
 import BatchMoveFiles from "@/main-render/batchMoveFiles";
 import path from "path";
 import { dialog } from "electron";
+import fs from "fs";
 const fnMap = {
-  GetFiles: getFiles,
+  GetFiles: async ({ dir, isDeep }) => {
+    return await getFiles(dir, isDeep);
+  },
   OpenDevTools: async () => {
     return global.win.webContents.openDevTools();
   },
@@ -37,6 +40,9 @@ const fnMap = {
   },
   BatchMoveFiles: async (params) => {
     return await BatchMoveFiles(params);
+  },
+  WriteFile: async ({ path, data }) => {
+    return await fs.writeFileSync(path, data);
   },
 };
 const keys = Object.keys(fnMap);
