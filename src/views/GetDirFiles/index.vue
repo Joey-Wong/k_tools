@@ -85,7 +85,7 @@ export default {
       if (!this.isKeepFDir) {
         const pos = this.targetDir.length + 1;
         files.forEach((v, index) => {
-          files[index] = v.slice(pos + 1);
+          files[index] = v.slice(pos + 2);
         });
       }
       const filePath = `${this.targetDir}/文件列表_${dayjs().format("YYYYMMDD")}.txt`;
