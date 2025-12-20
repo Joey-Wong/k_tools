@@ -77,6 +77,10 @@ export default {
         window.$message.warning("请选择操作文件夹");
         return false;
       }
+      if (!this.targetDir) {
+        window.$message.warning("请选择保存位置");
+        return false;
+      }
       const [err, files] = await ipcRenderer.invoke("GetFiles", { dir: this.sourceDir, isDeep: this.isDeep });
       if (err) {
         window.$message.error(err);
