@@ -28,10 +28,10 @@
         :disabled="progressing"
         @onClick="choseDir('targetDir')"
         type="primary"
-        :text="saveDir || '选择保存位置'"
+        :text="targetDir || '选择保存位置'"
       />
       <div style="margin-top: 20px">
-        <n-button :disabled="progressing" @click="start()" type="primary">保存</n-button>
+        <n-button :loading="progressing" :disabled="progressing" @click="start()" type="primary">保存</n-button>
       </div>
     </div>
   </div>
@@ -87,7 +87,7 @@ export default {
         return false;
       }
       if (!this.isKeepFDir) {
-        const pos = this.targetDir.length + 1;
+        const pos = this.sourceDir.length + 1;
         files.forEach((v, index) => {
           files[index] = v.slice(pos);
         });
