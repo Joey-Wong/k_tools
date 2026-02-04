@@ -104,6 +104,8 @@ jobs:
     needs: build  # 依赖于 build 作业完成
     runs-on: ubuntu-latest  # 在 Ubuntu 上运行发布作业
     if: startsWith(github.ref, 'refs/tags/')  # 只在推送标签时运行
+    permissions:
+      contents: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -114,91 +116,21 @@ jobs:
         with:
           path: artifacts
 
-      # 创建 GitHub Release
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
+      # 创建 GitHub Release 并上传所有平台的构建产物
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-
-      # 获取各平台构建产物文件名
-      - name: Get artifact filenames
-        id: get_filenames
-        shell: bash
-        run: |
-          # 获取 Windows 构建产物文件名
-          WINDOWS_FILE=$(ls -la artifacts/build-artifact-windows-latest/ | grep \.exe | head -1 | awk "{print $9}")
-          echo "WINDOWS_FILE=$WINDOWS_FILE" >> $GITHUB_ENV
-          echo "WINDOWS_PATH=artifacts/build-artifact-windows-latest/$WINDOWS_FILE" >> $GITHUB_ENV
-          
-          # 获取 macOS 构建产物文件名
-          MACOS_FILE=$(ls -la artifacts/build-artifact-macos-latest/ | grep -E "\.(dmg|zip)$" | head -1 | awk "{print $9}")
-          echo "MACOS_FILE=$MACOS_FILE" >> $GITHUB_ENV
-          echo "MACOS_PATH=artifacts/build-artifact-macos-latest/$MACOS_FILE" >> $GITHUB_ENV
-          
-          # 获取 macOS 构建产物的 MIME 类型
-          if [[ "$MACOS_FILE" == *.dmg ]]; then
-            echo "MACOS_CONTENT_TYPE=application/x-apple-diskimage" >> $GITHUB_ENV
-          elif [[ "$MACOS_FILE" == *.zip ]]; then
-            echo "MACOS_CONTENT_TYPE=application/zip" >> $GITHUB_ENV
-          else
-            echo "MACOS_CONTENT_TYPE=application/octet-stream" >> $GITHUB_ENV
-          fi
-          
-          # 获取 Linux 构建产物文件名
-          LINUX_FILE=$(ls -la artifacts/build-artifact-ubuntu-latest/ | grep -E "\.(AppImage|snap|deb)$" | head -1 | awk "{print $9}")
-          echo "LINUX_FILE=$LINUX_FILE" >> $GITHUB_ENV
-          echo "LINUX_PATH=artifacts/build-artifact-ubuntu-latest/$LINUX_FILE" >> $GITHUB_ENV
-          
-          # 获取 Linux 构建产物的 MIME 类型
-          if [[ "$LINUX_FILE" == *.AppImage ]]; then
-            echo "LINUX_CONTENT_TYPE=application/x-appimage" >> $GITHUB_ENV
-          elif [[ "$LINUX_FILE" == *.snap ]]; then
-            echo "LINUX_CONTENT_TYPE=application/x-snap" >> $GITHUB_ENV
-          elif [[ "$LINUX_FILE" == *.deb ]]; then
-            echo "LINUX_CONTENT_TYPE=application/vnd.debian.binary-package" >> $GITHUB_ENV
-          else
-            echo "LINUX_CONTENT_TYPE=application/octet-stream" >> $GITHUB_ENV
-          fi
-          
-          echo "Windows file: $WINDOWS_FILE"
-          echo "macOS file: $MACOS_FILE"
-          echo "Linux file: $LINUX_FILE"
-
-      # 上传 Windows 构建产物
-      - name: Upload Windows Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.WINDOWS_PATH }}
-          asset_name: ${{ env.WINDOWS_FILE }}
-          asset_content_type: application/octet-stream
-
-      # 上传 macOS 构建产物
-      - name: Upload macOS Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.MACOS_PATH }}
-          asset_name: ${{ env.MACOS_FILE }}
-          asset_content_type: ${{ env.MACOS_CONTENT_TYPE }}
-
-      # 上传 Linux 构建产物
-      - name: Upload Linux Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.LINUX_PATH }}
-          asset_name: ${{ env.LINUX_FILE }}
-          asset_content_type: ${{ env.LINUX_CONTENT_TYPE }}
+          files: |
+            artifacts/build-artifact-windows-latest/*.exe
+            artifacts/build-artifact-macos-latest/*.dmg
+            artifacts/build-artifact-macos-latest/*.zip
+            artifacts/build-artifact-ubuntu-latest/*.AppImage
+            artifacts/build-artifact-ubuntu-latest/*.snap
+            artifacts/build-artifact-ubuntu-latest/*.deb
+          fail_on_unmatched_files: true
