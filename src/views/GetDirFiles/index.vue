@@ -31,7 +31,9 @@
         :text="targetDir || '选择保存位置'"
       />
       <div style="margin-top: 20px">
-        <n-button :loading="progressing" :disabled="progressing" @click="start()" type="primary">保存</n-button>
+        <n-button :loading="progressing" :disabled="progressing" @click="start()" type="primary">
+          {{ progressing ? "正在扫描中..." : "开始执行" }}
+        </n-button>
       </div>
     </div>
   </div>
@@ -61,6 +63,7 @@ export default {
     return {
       isDeep: false,
       isKeepFDir: true,
+      progressing: false, // 在执行中
     };
   },
   methods: {
@@ -71,8 +74,6 @@ export default {
       this.isKeepFDir = v;
     },
     async start() {
-      this.Done = false; // 是否执行完成
-      this.progressing = false; // 在执行中
       if (!this.sourceDir) {
         window.$message.warning("请选择操作文件夹");
         return false;
@@ -81,9 +82,11 @@ export default {
         window.$message.warning("请选择保存位置");
         return false;
       }
+      this.progressing = true; // 在执行中
       const [err, files] = await ipcRenderer.invoke("GetFiles", { dir: this.sourceDir, isDeep: this.isDeep });
       if (err) {
         window.$message.error(err);
+        this.progressing = false; // 在执行中
         return false;
       }
       if (!this.isKeepFDir) {
@@ -97,10 +100,10 @@ export default {
         ipcRenderer.invoke("WriteFile", { path: filePath, data: files.join(`\r\n`) });
       } catch (e) {
         window.$message.error(e);
+        this.progressing = false; // 在执行中
         return false;
       }
       window.$message.success(`文件已保存至[${filePath}]`);
-      this.Done = true; // 是否执行完成
       this.progressing = false; // 在执行中
     },
   },
