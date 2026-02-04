@@ -122,6 +122,50 @@ jobs:
           draft: false
           prerelease: false
 
+      # 获取各平台构建产物文件名
+      - name: Get artifact filenames
+        id: get_filenames
+        shell: bash
+        run: |
+          # 获取 Windows 构建产物文件名
+          WINDOWS_FILE=$(ls -la artifacts/build-artifact-windows-latest/ | grep \.exe | head -1 | awk "{print $9}")
+          echo "WINDOWS_FILE=$WINDOWS_FILE" >> $GITHUB_ENV
+          echo "WINDOWS_PATH=artifacts/build-artifact-windows-latest/$WINDOWS_FILE" >> $GITHUB_ENV
+          
+          # 获取 macOS 构建产物文件名
+          MACOS_FILE=$(ls -la artifacts/build-artifact-macos-latest/ | grep -E "\.(dmg|zip)$" | head -1 | awk "{print $9}")
+          echo "MACOS_FILE=$MACOS_FILE" >> $GITHUB_ENV
+          echo "MACOS_PATH=artifacts/build-artifact-macos-latest/$MACOS_FILE" >> $GITHUB_ENV
+          
+          # 获取 macOS 构建产物的 MIME 类型
+          if [[ "$MACOS_FILE" == *.dmg ]]; then
+            echo "MACOS_CONTENT_TYPE=application/x-apple-diskimage" >> $GITHUB_ENV
+          elif [[ "$MACOS_FILE" == *.zip ]]; then
+            echo "MACOS_CONTENT_TYPE=application/zip" >> $GITHUB_ENV
+          else
+            echo "MACOS_CONTENT_TYPE=application/octet-stream" >> $GITHUB_ENV
+          fi
+          
+          # 获取 Linux 构建产物文件名
+          LINUX_FILE=$(ls -la artifacts/build-artifact-ubuntu-latest/ | grep -E "\.(AppImage|snap|deb)$" | head -1 | awk "{print $9}")
+          echo "LINUX_FILE=$LINUX_FILE" >> $GITHUB_ENV
+          echo "LINUX_PATH=artifacts/build-artifact-ubuntu-latest/$LINUX_FILE" >> $GITHUB_ENV
+          
+          # 获取 Linux 构建产物的 MIME 类型
+          if [[ "$LINUX_FILE" == *.AppImage ]]; then
+            echo "LINUX_CONTENT_TYPE=application/x-appimage" >> $GITHUB_ENV
+          elif [[ "$LINUX_FILE" == *.snap ]]; then
+            echo "LINUX_CONTENT_TYPE=application/x-snap" >> $GITHUB_ENV
+          elif [[ "$LINUX_FILE" == *.deb ]]; then
+            echo "LINUX_CONTENT_TYPE=application/vnd.debian.binary-package" >> $GITHUB_ENV
+          else
+            echo "LINUX_CONTENT_TYPE=application/octet-stream" >> $GITHUB_ENV
+          fi
+          
+          echo "Windows file: $WINDOWS_FILE"
+          echo "macOS file: $MACOS_FILE"
+          echo "Linux file: $LINUX_FILE"
+
       # 上传 Windows 构建产物
       - name: Upload Windows Asset
         uses: actions/upload-release-asset@v1
@@ -129,8 +173,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ fromJSON('["artifacts/build-artifact-windows-latest/" + (ls -la artifacts/build-artifact-windows-latest/ | grep \\.exe | head -1 | awk "{print $9}")]')[0] }}
-          asset_name: ${{ ls -la artifacts/build-artifact-windows-latest/ | grep \\.exe | head -1 | awk "{print $9}" }}
+          asset_path: ${{ env.WINDOWS_PATH }}
+          asset_name: ${{ env.WINDOWS_FILE }}
           asset_content_type: application/octet-stream
 
       # 上传 macOS 构建产物
@@ -140,9 +184,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ fromJSON('["artifacts/build-artifact-macos-latest/" + (ls -la artifacts/build-artifact-macos-latest/ | grep -E "\\.(dmg|zip)$" | head -1 | awk "{print $9}")]')[0] }}
-          asset_name: ${{ ls -la artifacts/build-artifact-macos-latest/ | grep -E "\\.(dmg|zip)$" | head -1 | awk "{print $9}" }}
-          asset_content_type: ${{ endsWith(asset_path, '.dmg') && 'application/x-apple-diskimage' || endsWith(asset_path, '.zip') && 'application/zip' || 'application/octet-stream' }}
+          asset_path: ${{ env.MACOS_PATH }}
+          asset_name: ${{ env.MACOS_FILE }}
+          asset_content_type: ${{ env.MACOS_CONTENT_TYPE }}
 
       # 上传 Linux 构建产物
       - name: Upload Linux Asset
@@ -151,6 +195,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ fromJSON('["artifacts/build-artifact-ubuntu-latest/" + (ls -la artifacts/build-artifact-ubuntu-latest/ | grep -E "\\.(AppImage|snap|deb)$" | head -1 | awk "{print $9}")]')[0] }}
-          asset_name: ${{ ls -la artifacts/build-artifact-ubuntu-latest/ | grep -E "\\.(AppImage|snap|deb)$" | head -1 | awk "{print $9}" }}
-          asset_content_type: ${{ endsWith(asset_path, '.AppImage') && 'application/x-appimage' || endsWith(asset_path, '.snap') && 'application/x-snap' || endsWith(asset_path, '.deb') && 'application/vnd.debian.binary-package' || 'application/octet-stream' }}
+          asset_path: ${{ env.LINUX_PATH }}
+          asset_name: ${{ env.LINUX_FILE }}
+          asset_content_type: ${{ env.LINUX_CONTENT_TYPE }}
