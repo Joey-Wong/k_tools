@@ -140,9 +140,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ fromJSON('["artifacts/build-artifact-macos-latest/" + (ls -la artifacts/build-artifact-macos-latest/ | grep \\.dmg | head -1 | awk "{print $9}")]')[0] }}
-          asset_name: ${{ ls -la artifacts/build-artifact-macos-latest/ | grep \\.dmg | head -1 | awk "{print $9}" }}
-          asset_content_type: application/octet-stream
+          asset_path: ${{ fromJSON('["artifacts/build-artifact-macos-latest/" + (ls -la artifacts/build-artifact-macos-latest/ | grep -E "\\.(dmg|zip)$" | head -1 | awk "{print $9}")]')[0] }}
+          asset_name: ${{ ls -la artifacts/build-artifact-macos-latest/ | grep -E "\\.(dmg|zip)$" | head -1 | awk "{print $9}" }}
+          asset_content_type: ${{ endsWith(asset_path, '.dmg') && 'application/x-apple-diskimage' || endsWith(asset_path, '.zip') && 'application/zip' || 'application/octet-stream' }}
 
       # 上传 Linux 构建产物
       - name: Upload Linux Asset
@@ -151,6 +151,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ fromJSON('["artifacts/build-artifact-ubuntu-latest/" + (ls -la artifacts/build-artifact-ubuntu-latest/ | grep -E "\\.(AppImage|deb)$" | head -1 | awk "{print $9}")]')[0] }}
-          asset_name: ${{ ls -la artifacts/build-artifact-ubuntu-latest/ | grep -E "\\.(AppImage|deb)$" | head -1 | awk "{print $9}" }}
-          asset_content_type: application/octet-stream
+          asset_path: ${{ fromJSON('["artifacts/build-artifact-ubuntu-latest/" + (ls -la artifacts/build-artifact-ubuntu-latest/ | grep -E "\\.(AppImage|snap|deb)$" | head -1 | awk "{print $9}")]')[0] }}
+          asset_name: ${{ ls -la artifacts/build-artifact-ubuntu-latest/ | grep -E "\\.(AppImage|snap|deb)$" | head -1 | awk "{print $9}" }}
+          asset_content_type: ${{ endsWith(asset_path, '.AppImage') && 'application/x-appimage' || endsWith(asset_path, '.snap') && 'application/x-snap' || endsWith(asset_path, '.deb') && 'application/vnd.debian.binary-package' || 'application/octet-stream' }}
