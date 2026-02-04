@@ -8,6 +8,10 @@ on:
     tags:
       - v*  # 当推送标签时触发（例如 v1.0.0）
 
+# 授予 GITHUB_TOKEN 创建 Release 和上传资产的权限
+permissions:
+  contents: write
+
 jobs:
   # 构建作业：在所有平台上构建
   build:
