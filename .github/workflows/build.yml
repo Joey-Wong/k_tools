@@ -1,11 +1,15 @@
-name: Build
+name: Build and Release
 
 on:
   push:
     branches:
       - main  # 指定触发分支，可改为你的分支名
       - develop  # 可添加多个分支
+    tags:
+      - v*  # 当推送标签时触发（例如 v1.0.0）
+
 jobs:
+  # 构建作业：在所有平台上构建
   build:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -35,8 +39,118 @@ jobs:
       - name: Build app
         run: npm run electron:build
 
-      - name: Upload Artifact
+      # 获取构建产物文件名（跨平台兼容）
+      - name: Get artifact filename
+        id: get_artifact
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            # Windows 平台：查找 .exe 文件
+            artifact_path=$(find dist_electron -name "*.exe" -type f | head -1)
+            if [[ -z "$artifact_path" ]]; then
+              echo "No .exe file found in dist_electron"
+              exit 1
+            fi
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            # macOS 平台：查找 .dmg 文件，没有则查找 .zip 文件
+            artifact_path=$(find dist_electron -name "*.dmg" -type f | head -1)
+            if [[ -z "$artifact_path" ]]; then
+              artifact_path=$(find dist_electron -name "*.zip" -type f | head -1)
+              if [[ -z "$artifact_path" ]]; then
+                echo "No .dmg or .zip file found in dist_electron"
+                exit 1
+              fi
+            fi
+          elif [[ "$RUNNER_OS" == "Linux" ]]; then
+            # Linux 平台：查找 .AppImage 文件，没有则查找 .snap 文件，最后查找 .deb 文件
+            artifact_path=$(find dist_electron -name "*.AppImage" -type f | head -1)
+            if [[ -z "$artifact_path" ]]; then
+              artifact_path=$(find dist_electron -name "*.snap" -type f | head -1)
+              if [[ -z "$artifact_path" ]]; then
+                artifact_path=$(find dist_electron -name "*.deb" -type f | head -1)
+                if [[ -z "$artifact_path" ]]; then
+                  echo "No .AppImage, .snap, or .deb file found in dist_electron"
+                  exit 1
+                fi
+              fi
+            fi
+          fi
+          
+          # 提取文件名
+          artifact_name=$(basename "$artifact_path")
+          
+          # 设置环境变量
+          echo "ARTIFACT_PATH=$artifact_path" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME=$artifact_name" >> $GITHUB_ENV
+          
+          echo "Found artifact: $artifact_name at $artifact_path"
+        shell: bash
+
+      # 上传构建产物作为 Artifact（用于后续发布步骤）
+      - name: Upload Build Artifact
+        if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ runner.os }}-dist_electron
-          path: dist_electron/
+          name: build-artifact-${{ matrix.os }}
+          path: ${{ env.ARTIFACT_PATH }}
+          compression-level: 0
+
+  # 发布作业：在所有构建完成后，创建 Release 并上传所有资产
+  release:
+    needs: build  # 依赖于 build 作业完成
+    runs-on: ubuntu-latest  # 在 Ubuntu 上运行发布作业
+    if: startsWith(github.ref, 'refs/tags/')  # 只在推送标签时运行
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 下载所有平台的构建产物
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      # 创建 GitHub Release
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
+      # 上传 Windows 构建产物
+      - name: Upload Windows Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ fromJSON('["artifacts/build-artifact-windows-latest/" + (ls -la artifacts/build-artifact-windows-latest/ | grep \\.exe | head -1 | awk "{print $9}")]')[0] }}
+          asset_name: ${{ ls -la artifacts/build-artifact-windows-latest/ | grep \\.exe | head -1 | awk "{print $9}" }}
+          asset_content_type: application/octet-stream
+
+      # 上传 macOS 构建产物
+      - name: Upload macOS Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ fromJSON('["artifacts/build-artifact-macos-latest/" + (ls -la artifacts/build-artifact-macos-latest/ | grep \\.dmg | head -1 | awk "{print $9}")]')[0] }}
+          asset_name: ${{ ls -la artifacts/build-artifact-macos-latest/ | grep \\.dmg | head -1 | awk "{print $9}" }}
+          asset_content_type: application/octet-stream
+
+      # 上传 Linux 构建产物
+      - name: Upload Linux Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ fromJSON('["artifacts/build-artifact-ubuntu-latest/" + (ls -la artifacts/build-artifact-ubuntu-latest/ | grep -E "\\.(AppImage|deb)$" | head -1 | awk "{print $9}")]')[0] }}
+          asset_name: ${{ ls -la artifacts/build-artifact-ubuntu-latest/ | grep -E "\\.(AppImage|deb)$" | head -1 | awk "{print $9}" }}
+          asset_content_type: application/octet-stream
