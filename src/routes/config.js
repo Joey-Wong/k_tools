@@ -30,6 +30,11 @@ const routes = [
     name: "getDirFiles",
     component: () => import("@/views/GetDirFiles"),
   },
+  {
+    path: "/batchDelFiles",
+    name: "batchDelFiles",
+    component: () => import("@/views/BatchDelFiles"),
+  },
 ];
 
 export default routes;

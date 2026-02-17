@@ -4,6 +4,7 @@ import { getFiles, getResourcesDir, AppID, getFileMD5, getFileSize } from "@/mai
 import BatchDelSameFile from "@/main-render/batchDelSameFile";
 import BatchRenameFiles from "@/main-render/batchRenameFiles";
 import BatchMoveFiles from "@/main-render/batchMoveFiles";
+import BatchDelFiles from "@/main-render/batchDelFiles";
 import path from "path";
 import { dialog } from "electron";
 import fs from "fs";
@@ -40,6 +41,9 @@ const fnMap = {
   },
   BatchMoveFiles: async (params) => {
     return await BatchMoveFiles(params);
+  },
+  BatchDelFiles: async (params) => {
+    return await BatchDelFiles(params);
   },
   WriteFile: async ({ path, data }) => {
     return await fs.writeFileSync(path, data);

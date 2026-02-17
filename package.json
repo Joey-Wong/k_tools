@@ -1,7 +1,7 @@
 {
   "name": "k_tools",
   "description": "计算文件MD5值,批量删除重复文件,批量重命名文件",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

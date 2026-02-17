@@ -132,6 +132,10 @@ export default {
           key: "batchRenameFiles",
         },
         {
+          title: "批量删除文件",
+          key: "batchDelFiles",
+        },
+        {
           title: "获取文件列表",
           key: "getDirFiles",
         },
